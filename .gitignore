@@ -5,4 +5,5 @@ nbproject
 *.lock
 .~lock*
 output
+packer*
 packer_cache

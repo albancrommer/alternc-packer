@@ -5,4 +5,7 @@ memory: 1024
 ostype: debian
 swap: 512
 lxc.log.level: 1
+lxc.net.0.type = veth
+lxc.net.0.link = lxcbr0
+lxc.net.0.flags = up
 
