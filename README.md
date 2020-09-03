@@ -14,6 +14,7 @@ apt install git curl gnupg2 lsb-release
 # Install packer from hashicorp repos + KVM,LXC dependencies 
 curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
 echo "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/packer.list
+apt update
 apt install packer qemu-system-x86 lxc
 
 # Clone this repo
