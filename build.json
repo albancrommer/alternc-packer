@@ -18,6 +18,8 @@
     },
 
     {
+            
+            "headless": true,
             "name": "buster-kvm",
             "type": "qemu",
             "format": "qcow2",
