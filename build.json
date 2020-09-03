@@ -1,0 +1,76 @@
+{
+  "variables": {
+        "user": "root",
+        "password": "alternc",
+        "disk_size": "100000",
+        "domain": ""
+    },
+  "builders": [
+
+
+    {
+      "type": "lxc",
+      "name": "buster-lxc",
+      "config_file": "files/lxc/config",
+      "template_name": "debian",
+      "template_environment_vars": ["SUITE=buster"],
+      "output_directory": "output"
+    },
+
+    {
+            "name": "buster-kvm",
+            "type": "qemu",
+            "format": "qcow2",
+            "accelerator": "kvm",
+            "disk_size": "{{ user `disk_size` }}",
+            "output_directory": "output",
+            "boot_key_interval": "20ms",
+            "iso_url": "http://cdimage.debian.org/debian-cd/10.5.0/amd64/iso-cd/debian-10.5.0-amd64-netinst.iso",
+            "iso_checksum": "sha256:93863e17ac24eeaa347dfb91dddac654f214c189e0379d7c28664a306e0301e7",
+            "http_directory": "http",
+            "ssh_username": "{{ user `user` }}",
+            "ssh_password": "{{ user `password` }}",
+            "shutdown_command": "echo '{{ user `password` }}' | sudo -S shutdown -h now",
+
+            "ssh_wait_timeout": "60m",
+              "qemuargs": [
+                  [ "-m", "2048M" ]
+              ],
+
+            "boot_wait": "2s",
+            "boot_command": [
+                   "<esc><wait><wait>",
+                   "install ",
+                   "auto=true ",
+                   "priority=critical ",
+                   "interface=auto ",
+                   "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>",
+                   "<enter>"
+            ]
+        }
+  ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sleep 3",
+        "apt update",
+        "apt install -y sudo git mariadb-server",
+        "git clone -b buster https://github.com/AlternC/easy-install.git /opt/easy-install",
+        "cd /opt/easy-install"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "files/easy-install/config.sh",
+      "destination": "/opt/easy-install/config.sh"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "cd /opt/easy-install && /opt/easy-install/install.sh"
+      ]
+    }
+  ]
+}

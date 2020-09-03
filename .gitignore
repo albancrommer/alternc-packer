@@ -1,0 +1,8 @@
+nbproject
+*~
+*.swp
+*.swo
+*.lock
+.~lock*
+output
+packer_cache
